@@ -1,12 +1,15 @@
-
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { themes } from '../theme/colors';
 import { getProgress } from '../utils/storage';
+import { useTheme } from '../theme/ThemeContext';
 
 export default function LevelsScreen({ route, navigation }) {
     const { topic, categoryId } = route.params;
-    const currentTheme = themes.light; 
+    
+    // Set default theme to dark
+    const { currentTheme } = useTheme(); 
     const [unlockedLevels, setUnlockedLevels] = useState(['level1']);
 
     useEffect(() => {
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
         padding: 20,
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderBottomColor: '#E0E0E0',
+        borderBottomColor: '#333333',
     },
     headerTitle: {
         fontSize: 24,
@@ -117,7 +120,7 @@ const styles = StyleSheet.create({
     lockedButton: {
         opacity: 0.7,
         borderWidth: 1,
-        borderColor: '#CCCCCC',
+        borderColor: '#444444',
     },
     levelText: {
         fontSize: 20,

@@ -1,7 +1,9 @@
 // src/hooks/useQuizEngine.js
 import { useState, useEffect, useRef } from 'react';
-import * as Haptics from 'expo-haptics';
-import { Audio } from 'expo-av';
+
+// Disable temporarily for debugging
+// import * as Haptics from 'expo-haptics';
+// import { Audio } from 'expo-av';
 
 export const useQuizEngine = (questions, timerDuration = 30) => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -12,12 +14,11 @@ export const useQuizEngine = (questions, timerDuration = 30) => {
     
     const timerRef = useRef(null);
 
-    // Start timer on question change
     useEffect(() => {
         if (timeLeft > 0 && !isFinished) {
             timerRef.current = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
         } else if (timeLeft === 0 && !isFinished) {
-            handleAnswer(false); // Auto-fail on timeout
+            handleAnswer(false); 
         }
         return () => clearTimeout(timerRef.current);
     }, [timeLeft, isFinished]);
@@ -27,12 +28,10 @@ export const useQuizEngine = (questions, timerDuration = 30) => {
 
         if (isCorrect) {
             setScore(prev => prev + 1);
-            if (settings.haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-            // TODO: Play success sound
+            // if (settings.haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         } else {
             setWrongAnswers(prev => prev + 1);
-            if (settings.haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-            // TODO: Play error sound
+            // if (settings.haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         }
 
         const nextIndex = currentIndex + 1;

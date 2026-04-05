@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import quizData from '../data/questions.json';
 import { themes } from '../theme/colors';
+import { useTheme } from '../theme/ThemeContext';
 
 export default function HomeScreen({ navigation }) {
-    // We use the light theme as a default for now
-    // In the future, we will link this to the user's settings state
-    const currentTheme = themes.light; 
+    // Set default theme to dark
+    const { currentTheme } = useTheme(); 
 
     const renderCategory = ({ item }) => (
         <View style={[styles.categoryContainer, { backgroundColor: currentTheme.surface }]}>
