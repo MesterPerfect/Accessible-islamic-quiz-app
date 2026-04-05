@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../theme/ThemeContext';
 import { saveProgress } from '../utils/storage';
 import { useSettings } from '../context/SettingsContext';
+import { updateStatistics } from '../utils/statistics';
 
 export default function ResultScreen({ route, navigation }) {
     const { score, totalQuestions, percentage, passed, categoryId, topicSlug, currentLevelKey, wrongQuestions } = route.params;
@@ -11,6 +12,13 @@ export default function ResultScreen({ route, navigation }) {
     const { reviewEnabled } = useSettings();
 
     useEffect(() => {
+        // 1. Update statistics for every completed quiz
+        updateStatistics({
+            totalQuestions,
+            correctAnswers: score,
+            wrongAnswers: totalQuestions - score
+        });
+        // 2. Save progress if passed
         if (passed) {
             const currentNum = parseInt(currentLevelKey.replace('level', ''));
             const nextLevelKey = `level${currentNum + 1}`;
