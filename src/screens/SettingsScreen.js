@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../theme/ThemeContext';
 import { useSettings } from '../context/SettingsContext';
 
-export default function SettingsScreen() {
+// Added navigation prop
+export default function SettingsScreen({ navigation }) {
     const { currentTheme, themeMode, toggleTheme } = useTheme();
     const { soundEnabled, toggleSound, hapticsEnabled, toggleHaptics } = useSettings();
 
@@ -22,7 +24,6 @@ export default function SettingsScreen() {
                 accessibilityRole="button"
                 accessibilityState={{ selected: isSelected }}
                 accessibilityLabel={label}
-                accessibilityHint={`Change app theme to ${label}`}
             >
                 <Text style={[
                     styles.optionText, 
@@ -36,49 +37,61 @@ export default function SettingsScreen() {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.background }]}>
-            {/* Appearance Section */}
-            <Text style={[styles.sectionTitle, { color: currentTheme.text }]} accessible={true} accessibilityRole="header">
-                المظهر
-            </Text>
-            {renderThemeOption('light', 'الوضع الفاتح')}
-            {renderThemeOption('dark', 'الوضع المظلم')}
-            {renderThemeOption('highContrast', 'وضع التباين العالي')}
+            <ScrollView showsVerticalScrollIndicator={false}>
+                {/* Appearance Section */}
+                <Text style={[styles.sectionTitle, { color: currentTheme.text }]} accessible={true} accessibilityRole="header">
+                    المظهر
+                </Text>
+                {renderThemeOption('light', 'الوضع الفاتح')}
+                {renderThemeOption('dark', 'الوضع المظلم')}
+                {renderThemeOption('highContrast', 'وضع التباين العالي')}
 
-            <View style={[styles.divider, { backgroundColor: currentTheme.surface }]} />
+                <View style={[styles.divider, { backgroundColor: currentTheme.surface }]} />
 
-            {/* Game Settings Section */}
-            <Text style={[styles.sectionTitle, { color: currentTheme.text }]} accessible={true} accessibilityRole="header">
-                إعدادات اللعب
-            </Text>
-            
-            <View style={[styles.settingRow, { backgroundColor: currentTheme.surface }]}>
-                <Text style={[styles.settingLabel, { color: currentTheme.text }]}>المؤثرات الصوتية</Text>
-                <Switch
-                    trackColor={{ false: '#767577', true: currentTheme.primary }}
-                    thumbColor={'#f4f3f4'}
-                    onValueChange={toggleSound}
-                    value={soundEnabled}
-                    accessible={true}
-                    accessibilityRole="switch"
-                    accessibilityState={{ checked: soundEnabled }}
-                    accessibilityLabel="تفعيل المؤثرات الصوتية"
-                />
-            </View>
+                {/* Game Settings Section */}
+                <Text style={[styles.sectionTitle, { color: currentTheme.text }]} accessible={true} accessibilityRole="header">
+                    إعدادات اللعب
+                </Text>
+                
+                <View style={[styles.settingRow, { backgroundColor: currentTheme.surface }]}>
+                    <Text style={[styles.settingLabel, { color: currentTheme.text }]}>المؤثرات الصوتية</Text>
+                    <Switch
+                        trackColor={{ false: '#767577', true: currentTheme.primary }}
+                        thumbColor={'#f4f3f4'}
+                        onValueChange={toggleSound}
+                        value={soundEnabled}
+                        accessible={true}
+                        accessibilityRole="switch"
+                    />
+                </View>
 
-            <View style={[styles.settingRow, { backgroundColor: currentTheme.surface }]}>
-                <Text style={[styles.settingLabel, { color: currentTheme.text }]}>الاهتزاز والتفاعل</Text>
-                <Switch
-                    trackColor={{ false: '#767577', true: currentTheme.primary }}
-                    thumbColor={'#f4f3f4'}
-                    onValueChange={toggleHaptics}
-                    value={hapticsEnabled}
-                    accessible={true}
-                    accessibilityRole="switch"
-                    accessibilityState={{ checked: hapticsEnabled }}
-                    accessibilityLabel="تفعيل الاهتزاز"
-                />
-            </View>
+                <View style={[styles.settingRow, { backgroundColor: currentTheme.surface }]}>
+                    <Text style={[styles.settingLabel, { color: currentTheme.text }]}>الاهتزاز والتفاعل</Text>
+                    <Switch
+                        trackColor={{ false: '#767577', true: currentTheme.primary }}
+                        thumbColor={'#f4f3f4'}
+                        onValueChange={toggleHaptics}
+                        value={hapticsEnabled}
+                        accessible={true}
+                        accessibilityRole="switch"
+                    />
+                </View>
 
+                <View style={[styles.divider, { backgroundColor: currentTheme.surface }]} />
+
+                {/* About Section */}
+                <Text style={[styles.sectionTitle, { color: currentTheme.text }]} accessible={true} accessibilityRole="header">
+                    حول التطبيق
+                </Text>
+                <TouchableOpacity 
+                    style={[styles.settingRow, { backgroundColor: currentTheme.surface }]}
+                    onPress={() => navigation.navigate('About')}
+                >
+                    <Text style={[styles.settingLabel, { color: currentTheme.text }]}>عن التطبيق والدعم</Text>
+                    <Feather name="chevron-left" size={24} color={currentTheme.textSecondary} />
+                </TouchableOpacity>
+
+            </ScrollView>
         </SafeAreaView>
     );
 }
@@ -86,11 +99,11 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        paddingHorizontal: 20,
     },
     sectionTitle: {
         fontSize: 22,
-        fontWeight: 'bold',
+        fontFamily: 'Cairo_Bold',
         marginBottom: 15,
         marginTop: 10,
         textAlign: 'right',
@@ -108,7 +121,7 @@ const styles = StyleSheet.create({
     },
     optionText: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'Cairo_Bold',
     },
     divider: {
         height: 2,
@@ -130,6 +143,6 @@ const styles = StyleSheet.create({
     },
     settingLabel: {
         fontSize: 18,
-        fontWeight: '500',
+        fontFamily: 'Cairo_Regular',
     }
 });
