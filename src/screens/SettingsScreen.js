@@ -5,7 +5,6 @@ import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../theme/ThemeContext';
 import { useSettings } from '../context/SettingsContext';
 
-// Added navigation prop
 export default function SettingsScreen({ navigation }) {
     const { currentTheme, themeMode, toggleTheme } = useTheme();
     const { soundEnabled, toggleSound, hapticsEnabled, toggleHaptics, reviewEnabled, toggleReview, feedbackEnabled, toggleFeedback } = useSettings();
@@ -65,7 +64,7 @@ export default function SettingsScreen({ navigation }) {
                     />
                 </View>
 
-                // Add reviewEnabled and toggleReview to destructuring:
+                {/* Review Mistakes Option */}
                 <View style={[styles.settingRow, { backgroundColor: currentTheme.surface }]}>
                     <Text style={[styles.settingLabel, { color: currentTheme.text }]}>إتاحة مراجعة الأخطاء</Text>
                     <Switch

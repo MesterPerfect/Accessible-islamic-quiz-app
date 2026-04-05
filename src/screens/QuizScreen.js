@@ -194,7 +194,7 @@ export default function QuizScreen({ route, navigation }) {
                             <View style={styles.correctAnswerBox}>
                                 <Text style={[styles.correctAnswerLabel, { color: currentTheme.textSecondary }]}>الإجابة الصحيحة هي:</Text>
                                 <Text style={[styles.correctAnswerValue, { color: currentTheme.correct }]}>
-                                    {currentQuestion.answers.find(a => a.t === 1)?.answer}
+                                    {currentQuestion.answers.find(a => a.t === 1)?.answer || 'غير متوفرة'}
                                 </Text>
                             </View>
                         )}

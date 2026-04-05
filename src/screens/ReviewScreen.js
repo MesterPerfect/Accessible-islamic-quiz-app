@@ -26,24 +26,33 @@ export default function ReviewScreen({ route, navigation }) {
             </View>
 
             <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-                {wrongQuestions.map((q, index) => {
-                    // Find the correct answer where t === 1
-                    const correctAnswer = q.answers.find(ans => ans.t === 1)?.answer;
-                    
-                    return (
-                        <View key={index} style={[styles.card, { backgroundColor: currentTheme.surface }]} accessible={true}>
-                            <Text style={[styles.questionText, { color: currentTheme.text }]}>
-                                {index + 1}. {q.q}
-                            </Text>
-                            <View style={[styles.answerContainer, { backgroundColor: currentTheme.correct + '20' }]}>
-                                <Feather name="check-circle" size={20} color={currentTheme.correct} />
-                                <Text style={[styles.correctAnswerText, { color: currentTheme.correct }]}>
-                                    {correctAnswer}
+                {(!wrongQuestions || wrongQuestions.length === 0) ? (
+                    <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 50 }}>
+                        <Feather name="check-circle" size={60} color={currentTheme.correct} />
+                        <Text style={{ fontSize: 20, fontFamily: 'Cairo_Bold', color: currentTheme.text, marginTop: 20, textAlign: 'center' }}>
+                            لا توجد أخطاء لمراجعتها!
+                        </Text>
+                    </View>
+                ) : (
+                    wrongQuestions.map((q, index) => {
+                        // Find the correct answer where t === 1
+                        const correctAnswer = q.answers.find(ans => ans.t === 1)?.answer || 'غير متوفرة';
+                        
+                        return (
+                            <View key={index} style={[styles.card, { backgroundColor: currentTheme.surface }]} accessible={true}>
+                                <Text style={[styles.questionText, { color: currentTheme.text }]}>
+                                    {index + 1}. {q.q}
                                 </Text>
+                                <View style={[styles.answerContainer, { backgroundColor: currentTheme.correct + '20' }]}>
+                                    <Feather name="check-circle" size={20} color={currentTheme.correct} />
+                                    <Text style={[styles.correctAnswerText, { color: currentTheme.correct }]}>
+                                        {correctAnswer}
+                                    </Text>
+                                </View>
                             </View>
-                        </View>
-                    );
-                })}
+                        );
+                    })
+                )}
             </ScrollView>
         </SafeAreaView>
     );

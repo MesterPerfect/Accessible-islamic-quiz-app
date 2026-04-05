@@ -28,7 +28,7 @@ export default function TopicsScreen({ route, navigation }) {
             </View>
             <FlatList
                 data={category.topics}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item, index) => item.slug || index.toString()}
                 renderItem={renderTopic}
                 contentContainerStyle={styles.listContainer}
             />

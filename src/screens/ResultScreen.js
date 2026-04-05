@@ -54,7 +54,8 @@ export default function ResultScreen({ route, navigation }) {
         try {
             const levelMap = { level1: 'المستوى الأول', level2: 'المستوى الثاني', level3: 'المستوى الثالث' };
             const levelName = levelMap[currentLevelKey] || '';
-            const message = `حصلت على ${score}/${totalQuestions} (${percentage.toFixed(0)}%) في تطبيق الأسئلة الإسلامية - ${levelName}!\nهل يمكنك التغلب علي؟ 🏆`;
+            const appLink = "https://play.google.com/store/apps/details?id=com.yourcompany.islamicquiz";
+            const message = `حصلت على ${score}/${totalQuestions} (${percentage.toFixed(0)}%) في تطبيق الأسئلة الإسلامية - ${levelName}!\nهل يمكنك التغلب علي؟ 🏆\nحمّل التطبيق من هنا: ${appLink}`;
             
             await Share.share({ message });
         } catch (error) {
