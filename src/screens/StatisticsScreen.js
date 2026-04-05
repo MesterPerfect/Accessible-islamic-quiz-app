@@ -50,38 +50,58 @@ export default function StatisticsScreen({ navigation }) {
 
             <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
                 {/* Points Card */}
-                <View style={[styles.mainCard, { backgroundColor: currentTheme.primary }]}>
-                    <Ionicons name="trophy" size={60} color="#FFD700" />
-                    <Text style={styles.pointsLabel}>إجمالي النقاط</Text>
-                    <Text style={styles.pointsValue}>{stats.totalPoints}</Text>
-                </View>
+                    <View 
+                        style={[styles.mainCard, { backgroundColor: currentTheme.primary }]}
+                        accessible={true}
+                        accessibilityLabel={`إجمالي النقاط: ${stats.totalPoints} نقطة`}
+                    >
+                        <Ionicons name="trophy" size={60} color="#FFD700" accessible={false} />
+                        <Text style={styles.pointsLabel} accessible={false}>إجمالي النقاط</Text>
+                        <Text style={styles.pointsValue} accessible={false}>{stats.totalPoints}</Text>
+                    </View>
 
                 {/* Grid Stats */}
                 <View style={styles.gridContainer}>
-                    <View style={[styles.gridItem, { backgroundColor: currentTheme.surface }]}>
+                    <View 
+                        style={[styles.gridItem, { backgroundColor: currentTheme.surface }]}
+                        accessible={true}
+                        accessibilityLabel={`نسبة الدقة: ${accuracy} بالمائة`}
+                    >
                         <Feather name="target" size={32} color={currentTheme.secondary} />
-                        <Text style={[styles.gridValue, { color: currentTheme.text }]}>{accuracy}%</Text>
-                        <Text style={[styles.gridLabel, { color: currentTheme.textSecondary }]}>نسبة الدقة</Text>
+                        <Text style={[styles.gridValue, { color: currentTheme.text }]} accessible={false}>{accuracy}%</Text>
+                        <Text style={[styles.gridLabel, { color: currentTheme.textSecondary }]} accessible={false}>نسبة الدقة</Text>
                     </View>
 
-                    <View style={[styles.gridItem, { backgroundColor: currentTheme.surface }]}>
+                    <View 
+                        style={[styles.gridItem, { backgroundColor: currentTheme.surface }]}
+                        accessible={true}
+                        accessibilityLabel={`اختبارات أُنجزت: ${stats.quizzesPlayed}`}
+                    >
                         <Feather name="play-circle" size={32} color="#3b82f6" />
-                        <Text style={[styles.gridValue, { color: currentTheme.text }]}>{stats.quizzesPlayed}</Text>
-                        <Text style={[styles.gridLabel, { color: currentTheme.textSecondary }]}>اختبارات أُنجزت</Text>
+                        <Text style={[styles.gridValue, { color: currentTheme.text }]} accessible={false}>{stats.quizzesPlayed}</Text>
+                        <Text style={[styles.gridLabel, { color: currentTheme.textSecondary }]} accessible={false}>اختبارات أُنجزت</Text>
                     </View>
                 </View>
 
                 <View style={styles.gridContainer}>
-                    <View style={[styles.gridItem, { backgroundColor: currentTheme.surface }]}>
+                    <View 
+                        style={[styles.gridItem, { backgroundColor: currentTheme.surface }]}
+                        accessible={true}
+                        accessibilityLabel={`إجابات صحيحة: ${stats.correctAnswers}`}
+                    >
                         <Feather name="check-circle" size={32} color={currentTheme.correct} />
-                        <Text style={[styles.gridValue, { color: currentTheme.correct }]}>{stats.correctAnswers}</Text>
-                        <Text style={[styles.gridLabel, { color: currentTheme.textSecondary }]}>إجابات صحيحة</Text>
+                        <Text style={[styles.gridValue, { color: currentTheme.correct }]} accessible={false}>{stats.correctAnswers}</Text>
+                        <Text style={[styles.gridLabel, { color: currentTheme.textSecondary }]} accessible={false}>إجابات صحيحة</Text>
                     </View>
 
-                    <View style={[styles.gridItem, { backgroundColor: currentTheme.surface }]}>
+                    <View 
+                        style={[styles.gridItem, { backgroundColor: currentTheme.surface }]}
+                        accessible={true}
+                        accessibilityLabel={`إجابات خاطئة: ${stats.wrongAnswers}`}
+                    >
                         <Feather name="x-circle" size={32} color={currentTheme.wrong} />
-                        <Text style={[styles.gridValue, { color: currentTheme.wrong }]}>{stats.wrongAnswers}</Text>
-                        <Text style={[styles.gridLabel, { color: currentTheme.textSecondary }]}>إجابات خاطئة</Text>
+                        <Text style={[styles.gridValue, { color: currentTheme.wrong }]} accessible={false}>{stats.wrongAnswers}</Text>
+                        <Text style={[styles.gridLabel, { color: currentTheme.textSecondary }]} accessible={false}>إجابات خاطئة</Text>
                     </View>
                 </View>
             </ScrollView>

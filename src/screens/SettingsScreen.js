@@ -61,6 +61,8 @@ export default function SettingsScreen({ navigation }) {
                         value={soundEnabled}
                         accessible={true}
                         accessibilityRole="switch"
+                        accessibilityState={{ checked: soundEnabled }}
+                        accessibilityLabel="تفعيل أو تعطيل المؤثرات الصوتية للتطبيق"
                     />
                 </View>
 

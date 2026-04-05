@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Font from 'expo-font';
 import { useFonts, Cairo_400Regular, Cairo_700Bold } from '@expo-google-fonts/cairo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Feather } from '@expo/vector-icons';
 
 import { ThemeProvider } from './src/theme/ThemeContext';
 import { SettingsProvider } from './src/context/SettingsContext';
@@ -82,12 +83,12 @@ export default function App() {
                                     headerRight: () => (
                                         <TouchableOpacity 
                                             onPress={() => navigation.navigate('Settings')} 
-                                            style={{ marginRight: 15 }}
+
                                             accessible={true}
                                             accessibilityRole="button"
                                             accessibilityLabel="الإعدادات"
                                         >
-                                            <Text style={{ color: '#FFFFFF', fontFamily: 'Cairo_Bold', fontSize: 16 }}>إعدادات</Text>
+                                            <Feather name="settings" size={24} color="#FFFFFF" />
                                         </TouchableOpacity>
                                     )
                                 })} 

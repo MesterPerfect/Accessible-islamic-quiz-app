@@ -1,32 +1,39 @@
 {
   "expo": {
-    "name": "islamic-quiz-app",
+    "name": "أسئلة إسلامية",
     "slug": "islamic-quiz-app",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1B5E20"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#1B5E20"
       },
-      "edgeToEdgeEnabled": true
+      "package": "com.mesterperfect.islamicquizapp",
+      "permissions": [
+        "INTERNET"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-font"
-    ]
+    "extra": {
+      "eas": {
+        "projectId": "75b1c536-44ac-44e7-8d90-0b34c06cbcb3"
+      }
+    }
   }
 }

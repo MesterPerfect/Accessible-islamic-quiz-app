@@ -152,14 +152,16 @@ export default function ResultScreen({ route, navigation }) {
                         <Text style={styles.buttonText}>العودة للمستويات</Text>
                     </TouchableOpacity>
 
+                    {/* Back to Home Button */}
                     <TouchableOpacity
                         style={[styles.actionButton, { backgroundColor: currentTheme.surface, borderWidth: 1, borderColor: currentTheme.textSecondary }]}
                         onPress={() => navigation.popToTop()} 
                         accessible={true}
                         accessibilityRole="button"
+                        accessibilityLabel="العودة للصفحة الرئيسية"
                     >
                         <Feather name="home" size={20} color={currentTheme.text} style={styles.btnIcon} />
-                        <Text style={[styles.buttonText, { color: currentTheme.text }]}>الرئيسية</Text>
+                        <Text style={[styles.buttonText, { color: currentTheme.text }]}>العودة للرئيسية</Text>
                     </TouchableOpacity>
                 </View>
 
