@@ -25,7 +25,8 @@ export default function QuizScreen({ route, navigation }) {
         nextQuestion
     } = useQuizEngine(questions, 30);
 
-    const [disabledHintIndex, setDisabledHintIndex] = useState(-1);
+    // State to hold multiple disabled indices for dynamic 50/50 hint
+    const [disabledHintIndices, setDisabledHintIndices] = useState([]);
 
     useEffect(() => {
         if (isFinished) {
@@ -43,13 +44,22 @@ export default function QuizScreen({ route, navigation }) {
         }
     }, [isFinished]);
 
-    // Handle Hint logic to disable ONE wrong answer
+    // Enhanced Hint Logic: Leaves exactly 2 options (1 correct, 1 wrong)
     useEffect(() => {
-        if (hintUsed && currentQuestion) {
-            const wrongIndex = currentQuestion.answers.findIndex(a => a.t !== 1);
-            setDisabledHintIndex(wrongIndex);
+        if (hintUsed && currentQuestion && currentQuestion.answers) {
+            const wrongIndices = [];
+            currentQuestion.answers.forEach((ans, idx) => {
+                if (ans.t !== 1) wrongIndices.push(idx);
+            });
+            
+            // Calculate how many wrong answers to remove to leave exactly 2 total options
+            const numToRemove = Math.max(1, currentQuestion.answers.length - 2);
+            
+            // Shuffle wrong indices and take the required amount
+            const shuffledWrong = wrongIndices.sort(() => 0.5 - Math.random());
+            setDisabledHintIndices(shuffledWrong.slice(0, numToRemove));
         } else {
-            setDisabledHintIndex(-1);
+            setDisabledHintIndices([]);
         }
     }, [hintUsed, currentQuestion]);
 
@@ -63,8 +73,8 @@ export default function QuizScreen({ route, navigation }) {
     }, [currentIndex, currentQuestion, isFinished, showFeedback]);
 
     useEffect(() => {
-        if (showFeedback) {
-            const correctAnswerText = currentQuestion.answers.find(a => a.t === 1)?.answer;
+        if (showFeedback && currentQuestion && currentQuestion.answers) {
+            const correctAnswerText = currentQuestion.answers.find(a => a.t === 1)?.answer || '';
             const msg = isAnswerCorrect 
                 ? "أحسنت! إجابة صحيحة." 
                 : `إجابة خاطئة. الإجابة الصحيحة هي: ${correctAnswerText}`;
@@ -72,7 +82,8 @@ export default function QuizScreen({ route, navigation }) {
         }
     }, [showFeedback]);
 
-    if (!currentQuestion || isFinished) return null; 
+    // Safety check for malformed question data
+    if (!currentQuestion || !currentQuestion.answers || isFinished) return null; 
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.background }]}>
@@ -110,7 +121,7 @@ export default function QuizScreen({ route, navigation }) {
             {/* Answers */}
             <View style={styles.answersContainer}>
                 {currentQuestion.answers.map((ans, index) => {
-                    const isHintDisabled = index === disabledHintIndex;
+                    const isHintDisabled = disabledHintIndices.includes(index);
                     
                     // Determine styling based on state
                     let bgColor = currentTheme.surface;
@@ -135,7 +146,7 @@ export default function QuizScreen({ route, navigation }) {
                             style={[
                                 styles.answerButton, 
                                 { backgroundColor: bgColor, borderColor },
-                                isHintDisabled && { opacity: 0.3 }
+                                isHintDisabled && { opacity: 0.1 }
                             ]}
                             onPress={() => handleAnswer(ans)}
                             disabled={showFeedback || isHintDisabled}
@@ -159,11 +170,11 @@ export default function QuizScreen({ route, navigation }) {
                 disabled={hintUsed || showFeedback}
                 accessible={true}
                 accessibilityRole="button"
-                accessibilityLabel="استخدام تلميح لإخفاء إجابة خاطئة"
+                accessibilityLabel="استخدام مساعدة لحذف إجابات خاطئة"
             >
                 <Feather name="flag" size={18} color={hintUsed ? currentTheme.textSecondary : '#000'} />
                 <Text style={[styles.hintText, { color: hintUsed ? currentTheme.textSecondary : '#000' }]}>
-                    {hintUsed ? 'تم استخدام التلميح' : 'استخدم تلميح'}
+                    {hintUsed ? 'تم استخدام المساعدة (50/50)' : 'حذف إجابات خاطئة (50/50)'}
                 </Text>
             </TouchableOpacity>
 
