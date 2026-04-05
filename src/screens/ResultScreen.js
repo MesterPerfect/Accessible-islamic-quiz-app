@@ -58,17 +58,32 @@ export default function ResultScreen({ route, navigation }) {
                 )}
             </View>
 
-            <TouchableOpacity
-                style={[styles.button, { backgroundColor: currentTheme.primary }]}
-                onPress={() => navigation.navigate('Levels', { 
-                    topic: { slug: topicSlug, name: '' }, 
-                    categoryId 
-                })}
-                accessible={true}
-                accessibilityRole="button"
-            >
-                <Text style={styles.buttonText}>Back to Levels</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+                {/* Back to Levels Button */}
+                <TouchableOpacity
+                    style={[styles.button, { backgroundColor: currentTheme.primary }]}
+                    onPress={() => navigation.navigate('Levels', { 
+                        topic: { slug: topicSlug, name: '' }, 
+                        categoryId 
+                    })}
+                    accessible={true}
+                    accessibilityRole="button"
+                    accessibilityLabel="Back to levels list"
+                >
+                    <Text style={styles.buttonText}>العودة للمستويات</Text>
+                </TouchableOpacity>
+
+                {/* Back to Home Button */}
+                <TouchableOpacity
+                    style={[styles.secondaryButton, { borderColor: currentTheme.primary, borderWidth: 2 }]}
+                    onPress={() => navigation.popToTop()} 
+                    accessible={true}
+                    accessibilityRole="button"
+                    accessibilityLabel="Back to main categories"
+                >
+                    <Text style={[styles.secondaryButtonText, { color: currentTheme.primary }]}>الرئيسية</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 }
@@ -122,14 +137,27 @@ const styles = StyleSheet.create({
         marginTop: 10,
         lineHeight: 24,
     },
+    buttonContainer: {
+        width: '100%',
+        gap: 12, 
+    },
     button: {
-        padding: 18,
+        padding: 16,
+        borderRadius: 12,
+        alignItems: 'center',
+    },
+    secondaryButton: {
+        padding: 16,
         borderRadius: 12,
         alignItems: 'center',
     },
     buttonText: {
         color: '#FFFFFF',
-        fontSize: 20,
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    secondaryButtonText: {
+        fontSize: 18,
         fontWeight: 'bold',
     }
 });

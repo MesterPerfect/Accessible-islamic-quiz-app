@@ -87,21 +87,26 @@ export default function QuizScreen({ route, navigation }) {
             </View>
 
             <View style={styles.answersContainer}>
-                {currentQuestion.answers.map((ans, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={[styles.answerButton, { backgroundColor: currentTheme.surface }]}
-                        onPress={() => onAnswerPress(ans.t === 1)}
-                        accessible={true}
-                        accessibilityRole="button"
-                        accessibilityLabel={ans.answer}
-                        accessibilityHint="Double tap to select this answer"
-                    >
-                        <Text style={[styles.answerText, { color: currentTheme.primary }]}>
-                            {ans.answer}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
+                {currentQuestion.answers.map((ans, index) => {
+                    const answerNumber = index + 1;
+                    return (
+                        <TouchableOpacity
+                            key={index}
+                            style={[styles.answerButton, { backgroundColor: currentTheme.surface }]}
+                            onPress={() => onAnswerPress(ans.t === 1)}
+                            accessible={true}
+                            accessibilityRole="button"
+                            // Accessibility: Include the answer number in the label
+                            accessibilityLabel={`Answer ${answerNumber}: ${ans.answer}`}
+                            accessibilityHint="Double tap to select this answer"
+                        >
+                            <Text style={[styles.answerText, { color: currentTheme.primary }]}>
+                                {/* Visual Numbering */}
+                                {answerNumber}. {ans.answer}
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                })}
             </View>
         </SafeAreaView>
     );
