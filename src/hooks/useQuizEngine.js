@@ -49,12 +49,12 @@ export const useQuizEngine = (initialQuestions, timerDuration = 30) => {
 
     const triggerHapticFeedback = (type) => {
         if (!hapticsEnabled) return;
-        console.log(`[Haptics Triggered]: ${type}`);
+        // Haptics logic will go here when implemented natively
     };
 
     const playFeedbackSound = (isCorrect) => {
         if (!soundEnabled) return;
-        console.log(isCorrect ? "[Sound Playing]: Correct" : "[Sound Playing]: Wrong");
+        // Sound logic will go here when implemented natively
     };
 
     const handleAnswer = (answerObj) => {
