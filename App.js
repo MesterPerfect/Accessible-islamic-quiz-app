@@ -9,6 +9,7 @@ import { ThemeProvider } from './src/theme/ThemeContext';
 import HomeScreen from './src/screens/HomeScreen';
 import LevelsScreen from './src/screens/LevelsScreen';
 import QuizScreen from './src/screens/QuizScreen';
+import ResultScreen from './src/screens/ResultScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,7 @@ export default function App() {
                         <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'الرئيسية' }} />
                         <Stack.Screen name="Levels" component={LevelsScreen} options={{ title: 'المستويات' }} />
                         <Stack.Screen name="Quiz" component={QuizScreen} options={{ title: 'الاختبار' }} />
+                        <Stack.Screen name="Result" component={ResultScreen} options={{ title: 'النتيجة', headerShown: false }} />
                     </Stack.Navigator>
                 </NavigationContainer>
             </SafeAreaProvider>

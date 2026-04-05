@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { themes } from '../theme/colors';
-import { getProgress } from '../utils/storage';
 import { useTheme } from '../theme/ThemeContext';
+import { getProgress } from '../utils/storage';
 
 export default function LevelsScreen({ route, navigation }) {
     const { topic, categoryId } = route.params;
-    
-    // Set default theme to dark
     const { currentTheme } = useTheme(); 
     const [unlockedLevels, setUnlockedLevels] = useState(['level1']);
 
@@ -50,20 +47,15 @@ export default function LevelsScreen({ route, navigation }) {
                 accessible={true}
                 accessibilityRole="button"
                 accessibilityState={{ disabled: !isUnlocked }}
-                accessibilityLabel={`مستوى ${index + 1}`}
-                accessibilityHint={isUnlocked ? "انقر مرتين لبدء الاختبار" : "هذا المستوى مغلق"}
+                accessibilityLabel={`Level ${index + 1}`}
+                accessibilityHint={isUnlocked ? "Double tap to start quiz" : "This level is locked"}
             >
                 <Text style={[
                     styles.levelText,
                     { color: isUnlocked ? '#FFFFFF' : currentTheme.textSecondary }
                 ]}>
-                    مستوى {index + 1}
+                    {index + 1}
                 </Text>
-                {!isUnlocked && (
-                    <Text style={[styles.lockedText, { color: currentTheme.wrong }]} accessible={false}>
-                        (مغلق)
-                    </Text>
-                )}
             </TouchableOpacity>
         );
     };
@@ -72,7 +64,7 @@ export default function LevelsScreen({ route, navigation }) {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.background }]}>
-            <View style={styles.headerContainer} accessible={true} accessibilityRole="header">
+            <View style={[styles.headerContainer, { borderBottomColor: currentTheme.surface }]} accessible={true} accessibilityRole="header">
                 <Text style={[styles.headerTitle, { color: currentTheme.text }]}>
                     {topic.name}
                 </Text>
@@ -81,6 +73,8 @@ export default function LevelsScreen({ route, navigation }) {
                 data={levelsArray}
                 keyExtractor={(item) => item}
                 renderItem={renderLevel}
+                numColumns={3}
+                columnWrapperStyle={styles.row}
                 contentContainerStyle={styles.listContainer}
             />
         </SafeAreaView>
@@ -95,7 +89,6 @@ const styles = StyleSheet.create({
         padding: 20,
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderBottomColor: '#333333',
     },
     headerTitle: {
         fontSize: 24,
@@ -104,31 +97,30 @@ const styles = StyleSheet.create({
     listContainer: {
         padding: 16,
     },
+    row: {
+        flex: 1,
+        justifyContent: 'flex-start',
+    },
     levelButton: {
-        padding: 20,
-        borderRadius: 12,
-        marginBottom: 16,
+        width: '30%',
+        aspectRatio: 1, 
+        margin: '1.5%',
+        borderRadius: 16,
         alignItems: 'center',
-        flexDirection: 'row',
         justifyContent: 'center',
-        elevation: 3,
+        elevation: 4,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.2,
         shadowRadius: 4,
     },
     lockedButton: {
-        opacity: 0.7,
-        borderWidth: 1,
-        borderColor: '#444444',
+        opacity: 0.5,
+        borderWidth: 2,
+        borderStyle: 'dashed',
     },
     levelText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    lockedText: {
-        fontSize: 14,
-        marginLeft: 8,
+        fontSize: 32,
         fontWeight: 'bold',
     }
 });

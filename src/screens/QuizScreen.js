@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { themes } from '../theme/colors';
@@ -27,26 +27,26 @@ export default function QuizScreen({ route, navigation }) {
     };
 
     // Render result view when finished
+useEffect(() => {
     if (isFinished) {
         const result = calculateResult();
-        return (
-            <SafeAreaView style={[styles.centeredContainer, { backgroundColor: currentTheme.background }]}>
-                <Text style={[styles.title, { color: currentTheme.text }]}>End of Level</Text>
-                <Text style={{ color: currentTheme.text, fontSize: 18, marginTop: 10 }}>
-                    Score: {result.score} / {questions.length}
-                </Text>
-                <Text style={{ color: currentTheme.text, fontSize: 18, marginTop: 10 }}>
-                    Percentage: {result.percentage.toFixed(2)}%
-                </Text>
-                <TouchableOpacity 
-                    style={[styles.button, { backgroundColor: currentTheme.primary }]}
-                    onPress={() => navigation.goBack()}
-                >
-                    <Text style={styles.buttonText}>Go Back</Text>
-                </TouchableOpacity>
-            </SafeAreaView>
-        );
+        // Replace current screen with Result screen to prevent going back to finished quiz
+        navigation.replace('Result', {
+            score: result.score,
+            totalQuestions: questions.length,
+            percentage: result.percentage,
+            passed: result.passed,
+            categoryId,
+            topicSlug,
+            currentLevelKey: levelKey
+        });
     }
+}, [isFinished]);
+
+// Prevent rendering question if finished (to avoid errors during transition)
+if (!currentQuestion || isFinished) {
+    return null; 
+}
 
     if (!currentQuestion) {
         return null; 
