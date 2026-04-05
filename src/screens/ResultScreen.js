@@ -107,13 +107,13 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 32,
-        fontWeight: 'bold',
         marginBottom: 20,
+        fontFamily: 'Cairo_Bold',
     },
     percentageText: {
         fontSize: 48,
-        fontWeight: 'bold',
         marginBottom: 15,
+        fontFamily: 'Cairo_Bold',
     },
     progressBarBackground: {
         height: 15,
@@ -129,13 +129,14 @@ const styles = StyleSheet.create({
     detailsText: {
         fontSize: 20,
         marginBottom: 10,
-        fontWeight: '500',
+        fontFamily: 'Cairo_Bold',
     },
     messageText: {
         fontSize: 16,
         textAlign: 'center',
         marginTop: 10,
         lineHeight: 24,
+        fontFamily: 'Cairo_Regular',
     },
     buttonContainer: {
         width: '100%',
@@ -154,10 +155,10 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#FFFFFF',
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'Cairo_Bold',
     },
     secondaryButtonText: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'Cairo_Bold',
     }
 });

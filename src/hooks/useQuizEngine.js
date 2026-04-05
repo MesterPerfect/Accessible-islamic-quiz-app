@@ -1,11 +1,8 @@
-// src/hooks/useQuizEngine.js
 import { useState, useEffect, useRef } from 'react';
-
-// Disable temporarily for debugging
-// import * as Haptics from 'expo-haptics';
-// import { Audio } from 'expo-av';
+import { useSettings } from '../context/SettingsContext';
 
 export const useQuizEngine = (questions, timerDuration = 30) => {
+    const { soundEnabled, hapticsEnabled } = useSettings();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [score, setScore] = useState(0);
     const [wrongAnswers, setWrongAnswers] = useState(0);
@@ -23,15 +20,31 @@ export const useQuizEngine = (questions, timerDuration = 30) => {
         return () => clearTimeout(timerRef.current);
     }, [timeLeft, isFinished]);
 
-    const handleAnswer = async (isCorrect, settings) => {
+    const triggerHapticFeedback = (type) => {
+        if (!hapticsEnabled) return;
+        
+        // Placeholder for future native implementation
+        console.log(`[Haptics Triggered]: ${type}`);
+    };
+
+    const playFeedbackSound = (isCorrect) => {
+        if (!soundEnabled) return;
+        
+        // Placeholder for future native implementation
+        console.log(isCorrect ? "[Sound Playing]: Correct" : "[Sound Playing]: Wrong");
+    };
+
+    const handleAnswer = (isCorrect) => {
         clearTimeout(timerRef.current);
 
         if (isCorrect) {
             setScore(prev => prev + 1);
-            // if (settings.haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            triggerHapticFeedback('success');
+            playFeedbackSound(true);
         } else {
             setWrongAnswers(prev => prev + 1);
-            // if (settings.haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            triggerHapticFeedback('error');
+            playFeedbackSound(false);
         }
 
         const nextIndex = currentIndex + 1;

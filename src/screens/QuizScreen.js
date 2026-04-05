@@ -125,11 +125,11 @@ const styles = StyleSheet.create({
     },
     timer: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'Cairo_Bold',
     },
     progress: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'Cairo_Bold',
     },
     questionContainer: {
         padding: 20,
@@ -143,9 +143,9 @@ const styles = StyleSheet.create({
     },
     questionText: {
         fontSize: 22,
-        fontWeight: 'bold',
         textAlign: 'center',
         lineHeight: 32,
+        fontFamily: 'Cairo_Bold',
     },
     answersContainer: {
         flex: 1,
@@ -160,6 +160,6 @@ const styles = StyleSheet.create({
     answerText: {
         fontSize: 18,
         textAlign: 'center',
-        fontWeight: '500',
+        fontFamily: 'Cairo_Bold',
     }
 });

@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         lineHeight: 24,
+        fontFamily: 'Cairo_Regular',
     },
     listContainer: {
         padding: 16,
@@ -69,13 +70,14 @@ const styles = StyleSheet.create({
     },
     categoryTitle: {
         fontSize: 24,
-        fontWeight: 'bold',
         marginBottom: 8,
         textAlign: 'center',
+        fontFamily: 'Cairo_Bold',
     },
     categoryDescription: {
         fontSize: 14,
         textAlign: 'center',
         lineHeight: 22,
+        fontFamily: 'Cairo_Regular',
     }
 });
