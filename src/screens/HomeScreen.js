@@ -5,25 +5,28 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../theme/ThemeContext';
-import categories from '../data/questions.json';
+import questionsData from '../data/questions.json';
 import { getStatistics } from '../utils/statistics';
+
+// Safely extract the categories array to prevent "non-iterable" errors
+const categoriesList = Array.isArray(questionsData) 
+    ? questionsData 
+    : (questionsData.mainCategories || questionsData.default || []);
 
 export default function HomeScreen({ navigation }) {
     const { currentTheme } = useTheme();
     const [stats, setStats] = useState({ totalPoints: 0, quizzesPlayed: 0 });
     const [categoryProgress, setCategoryProgress] = useState({});
 
-    // Fetch stats and progress every time the screen is focused
     useFocusEffect(
         useCallback(() => {
             const loadData = async () => {
-                // Fetch overall stats for the pill
                 const currentStats = await getStatistics();
                 setStats(currentStats);
 
-                // Fetch progress for each category to display dots
                 const progressObj = {};
-                for (const cat of categories) {
+                // Use the safely extracted categoriesList
+                for (const cat of categoriesList) {
                     try {
                         const savedLevel = await AsyncStorage.getItem(`@progress_${cat.id}_${cat.slug}`);
                         let completed = 0;
@@ -43,7 +46,6 @@ export default function HomeScreen({ navigation }) {
 
     const renderHeader = () => (
         <View style={styles.header}>
-            {/* Achievements Pill */}
             <View 
                 style={[styles.achievementsPill, { backgroundColor: currentTheme.surface, borderColor: currentTheme.primary }]}
                 accessible={true}
@@ -59,7 +61,6 @@ export default function HomeScreen({ navigation }) {
                 مرحباً بك في تطبيق الأسئلة الإسلامية. اختر تصنيفاً لتبدأ الاختبار وتختبر معلوماتك.
             </Text>
 
-            {/* Prominent Statistics Button */}
             <TouchableOpacity 
                 style={[styles.statsCard, { backgroundColor: currentTheme.primary }]}
                 onPress={() => navigation.navigate('Statistics')}
@@ -85,12 +86,13 @@ export default function HomeScreen({ navigation }) {
                 onPress={() => navigation.navigate('Topics', { category: item })}
                 accessible={true}
                 accessibilityRole="button"
-                accessibilityLabel={`${item.title}. ${item.description}. اكتمل ${completedLevels} من أصل 3 مستويات.`}
+                accessibilityLabel={`${item.title || item.arabicName}. ${item.description}. اكتمل ${completedLevels} من أصل 3 مستويات.`}
             >
                 <View style={styles.categoryHeader}>
-                    <Text style={[styles.categoryTitle, { color: currentTheme.primary }]}>{item.title}</Text>
+                    <Text style={[styles.categoryTitle, { color: currentTheme.primary }]}>
+                        {item.title || item.arabicName}
+                    </Text>
                     
-                    {/* Category Meta: Dots and Text */}
                     <View style={styles.categoryMeta} accessible={false}>
                         <View style={styles.progressDots}>
                             {[1, 2, 3].map(i => (
@@ -119,8 +121,8 @@ export default function HomeScreen({ navigation }) {
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.background }]}>
             <FlatList
-                data={categories}
-                keyExtractor={(item) => item.id.toString()}
+                data={categoriesList} // Use the safely extracted list here
+                keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
                 renderItem={renderCategory}
                 ListHeaderComponent={renderHeader}
                 contentContainerStyle={styles.listContainer}
