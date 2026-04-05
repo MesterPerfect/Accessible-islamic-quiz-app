@@ -6,7 +6,7 @@ import { useTheme } from '../theme/ThemeContext';
 
 export default function AboutScreen() {
     const { currentTheme } = useTheme();
-    const githubLink = 'https://github.com/MesterPerfect/islamic-quiz-app';
+    const githubLink = 'https://github.com/MesterPerfect/Accessible-islamic-quiz-app';
 
     const openLink = (url) => {
         Linking.openURL(url).catch(err => console.error("Couldn't load page", err));
