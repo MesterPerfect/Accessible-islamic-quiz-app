@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { Audio } from 'expo-av';
+import * as Haptics from 'expo-haptics';
 import { useSettings } from '../context/SettingsContext';
 
 const shuffleArray = (array) => {
@@ -28,7 +30,7 @@ export const useQuizEngine = (initialQuestions, timerDuration = 30) => {
     const [timeLeft, setTimeLeft] = useState(timerDuration);
     const [isFinished, setIsFinished] = useState(false);
     
-    // New States for Gamification
+    // States for Gamification
     const [lives, setLives] = useState(3);
     const [hintUsed, setHintUsed] = useState(false);
     const [showFeedback, setShowFeedback] = useState(false);
@@ -36,6 +38,33 @@ export const useQuizEngine = (initialQuestions, timerDuration = 30) => {
     const [isAnswerCorrect, setIsAnswerCorrect] = useState(null);
 
     const timerRef = useRef(null);
+    const correctSoundRef = useRef(null);
+    const wrongSoundRef = useRef(null);
+
+    // Load sounds on mount and unload on unmount
+    useEffect(() => {
+        const loadAudioFiles = async () => {
+            try {
+                const { sound: correct } = await Audio.Sound.createAsync(
+                    require('../../assets/sounds/correct.mp3')
+                );
+                const { sound: wrong } = await Audio.Sound.createAsync(
+                    require('../../assets/sounds/wrong.mp3')
+                );
+                correctSoundRef.current = correct;
+                wrongSoundRef.current = wrong;
+            } catch (error) {
+                // Audio files missing or failed to load, fail silently
+            }
+        };
+
+        loadAudioFiles();
+
+        return () => {
+            if (correctSoundRef.current) correctSoundRef.current.unloadAsync();
+            if (wrongSoundRef.current) wrongSoundRef.current.unloadAsync();
+        };
+    }, []);
 
     // Timer logic
     useEffect(() => {
@@ -47,14 +76,30 @@ export const useQuizEngine = (initialQuestions, timerDuration = 30) => {
         return () => clearTimeout(timerRef.current);
     }, [timeLeft, isFinished, showFeedback]);
 
-    const triggerHapticFeedback = (type) => {
+    const triggerHapticFeedback = async (type) => {
         if (!hapticsEnabled) return;
-        // Haptics logic will go here when implemented natively
+        try {
+            if (type === 'success') {
+                await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            } else {
+                await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            }
+        } catch (error) {
+            // Ignore if device does not support haptics
+        }
     };
 
-    const playFeedbackSound = (isCorrect) => {
+    const playFeedbackSound = async (isCorrect) => {
         if (!soundEnabled) return;
-        // Sound logic will go here when implemented natively
+        try {
+            if (isCorrect && correctSoundRef.current) {
+                await correctSoundRef.current.replayAsync();
+            } else if (!isCorrect && wrongSoundRef.current) {
+                await wrongSoundRef.current.replayAsync();
+            }
+        } catch (error) {
+            // Ignore audio playback errors
+        }
     };
 
     const handleAnswer = (answerObj) => {
