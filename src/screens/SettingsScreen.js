@@ -8,7 +8,7 @@ import { useSettings } from '../context/SettingsContext';
 // Added navigation prop
 export default function SettingsScreen({ navigation }) {
     const { currentTheme, themeMode, toggleTheme } = useTheme();
-    const { soundEnabled, toggleSound, hapticsEnabled, toggleHaptics, reviewEnabled, toggleReview } = useSettings();
+    const { soundEnabled, toggleSound, hapticsEnabled, toggleHaptics, reviewEnabled, toggleReview, feedbackEnabled, toggleFeedback } = useSettings();
 
     const renderThemeOption = (mode, label) => {
         const isSelected = themeMode === mode;
@@ -77,6 +77,19 @@ export default function SettingsScreen({ navigation }) {
                         accessibilityRole="switch"
                         accessibilityState={{ checked: reviewEnabled }}
                         accessibilityLabel="تفعيل أو تعطيل إمكانية مراجعة الأخطاء بعد انتهاء المستوى"
+                    />
+                </View>
+
+                <View style={[styles.settingRow, { backgroundColor: currentTheme.surface }]}>
+                    <Text style={[styles.settingLabel, { color: currentTheme.text }]}>نافذة الإجابة الفورية</Text>
+                    <Switch
+                        trackColor={{ false: '#767577', true: currentTheme.primary }}
+                        thumbColor={'#f4f3f4'}
+                        onValueChange={toggleFeedback}
+                        value={feedbackEnabled}
+                        accessible={true}
+                        accessibilityRole="switch"
+                        accessibilityLabel="تفعيل أو تعطيل نافذة إظهار نتيجة الإجابة الفورية وتصحيحها"
                     />
                 </View>
 

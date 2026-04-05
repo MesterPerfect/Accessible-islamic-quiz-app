@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useSettings } from '../context/SettingsContext';
 
-// Helper function to shuffle an array (Fisher-Yates algorithm)
 const shuffleArray = (array) => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -12,9 +11,8 @@ const shuffleArray = (array) => {
 };
 
 export const useQuizEngine = (initialQuestions, timerDuration = 30) => {
-    const { soundEnabled, hapticsEnabled } = useSettings();
+    const { soundEnabled, hapticsEnabled, feedbackEnabled } = useSettings();
     
-    // Shuffle questions and their answers only once when the quiz starts
     const questions = useMemo(() => {
         const shuffledQs = shuffleArray(initialQuestions);
         return shuffledQs.map(q => ({
@@ -26,20 +24,28 @@ export const useQuizEngine = (initialQuestions, timerDuration = 30) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [score, setScore] = useState(0);
     const [wrongAnswers, setWrongAnswers] = useState(0);
-    const [wrongQuestionsList, setWrongQuestionsList] = useState([]); // Track failed questions
+    const [wrongQuestionsList, setWrongQuestionsList] = useState([]);
     const [timeLeft, setTimeLeft] = useState(timerDuration);
     const [isFinished, setIsFinished] = useState(false);
     
+    // New States for Gamification
+    const [lives, setLives] = useState(3);
+    const [hintUsed, setHintUsed] = useState(false);
+    const [showFeedback, setShowFeedback] = useState(false);
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
+    const [isAnswerCorrect, setIsAnswerCorrect] = useState(null);
+
     const timerRef = useRef(null);
 
+    // Timer logic
     useEffect(() => {
-        if (timeLeft > 0 && !isFinished) {
+        if (timeLeft > 0 && !isFinished && !showFeedback) {
             timerRef.current = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-        } else if (timeLeft === 0 && !isFinished) {
-            handleAnswer(false); 
+        } else if (timeLeft === 0 && !isFinished && !showFeedback) {
+            handleAnswer(null); // Time out
         }
         return () => clearTimeout(timerRef.current);
-    }, [timeLeft, isFinished]);
+    }, [timeLeft, isFinished, showFeedback]);
 
     const triggerHapticFeedback = (type) => {
         if (!hapticsEnabled) return;
@@ -51,38 +57,73 @@ export const useQuizEngine = (initialQuestions, timerDuration = 30) => {
         console.log(isCorrect ? "[Sound Playing]: Correct" : "[Sound Playing]: Wrong");
     };
 
-    const handleAnswer = (isCorrect) => {
+    const handleAnswer = (answerObj) => {
+        if (selectedAnswer !== null || isFinished) return;
+        
         clearTimeout(timerRef.current);
+        setSelectedAnswer(answerObj);
 
-        if (isCorrect) {
+        const correct = answerObj && answerObj.t === 1;
+        setIsAnswerCorrect(correct);
+
+        if (correct) {
             setScore(prev => prev + 1);
             triggerHapticFeedback('success');
             playFeedbackSound(true);
         } else {
             setWrongAnswers(prev => prev + 1);
-            // Add the current question to the mistakes list
             setWrongQuestionsList(prev => [...prev, questions[currentIndex]]);
+            setLives(prev => prev - 1);
             triggerHapticFeedback('error');
             playFeedbackSound(false);
+        }
+
+        if (feedbackEnabled) {
+            setShowFeedback(true);
+        } else {
+            // Automatically proceed if feedback is disabled
+            proceedToNextQuestion(!correct);
+        }
+    };
+
+    const proceedToNextQuestion = (wasWrong = false) => {
+        const currentLives = wasWrong ? lives - 1 : lives;
+        
+        if (currentLives <= 0) {
+            setIsFinished(true); // Game Over
+            return;
         }
 
         const nextIndex = currentIndex + 1;
         if (nextIndex < questions.length) {
             setCurrentIndex(nextIndex);
             setTimeLeft(timerDuration);
+            setSelectedAnswer(null);
+            setIsAnswerCorrect(null);
+            setShowFeedback(false);
+            setHintUsed(false); // Reset hint for the new question
         } else {
             setIsFinished(true);
         }
+    };
+
+    const nextQuestion = () => {
+        proceedToNextQuestion(isAnswerCorrect === false);
+    };
+
+    const useHint = () => {
+        if (hintUsed || showFeedback || isFinished) return;
+        setHintUsed(true);
     };
 
     const calculateResult = () => {
         const percentage = (score / questions.length) * 100;
         return {
             percentage,
-            passed: percentage >= 80,
+            passed: lives > 0 && percentage >= 80, // Must survive and get 80%
             score,
             wrongAnswers,
-            wrongQuestions: wrongQuestionsList // Export mistakes
+            wrongQuestions: wrongQuestionsList
         };
     };
 
@@ -92,6 +133,13 @@ export const useQuizEngine = (initialQuestions, timerDuration = 30) => {
         timeLeft,
         isFinished,
         handleAnswer,
-        calculateResult
+        calculateResult,
+        lives,
+        hintUsed,
+        useHint,
+        showFeedback,
+        selectedAnswer,
+        isAnswerCorrect,
+        nextQuestion
     };
 };

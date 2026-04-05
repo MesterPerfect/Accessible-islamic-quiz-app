@@ -5,12 +5,14 @@ const SettingsContext = createContext();
 
 const SOUND_KEY = '@app_sound_enabled';
 const HAPTICS_KEY = '@app_haptics_enabled';
-const REVIEW_KEY = '@app_review_enabled'; // New key for review setting
+const REVIEW_KEY = '@app_review_enabled';
+const FEEDBACK_KEY = '@app_feedback_enabled'; // New key
 
 export const SettingsProvider = ({ children }) => {
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [hapticsEnabled, setHapticsEnabled] = useState(true);
-    const [reviewEnabled, setReviewEnabled] = useState(true); // Default is true
+    const [reviewEnabled, setReviewEnabled] = useState(true);
+    const [feedbackEnabled, setFeedbackEnabled] = useState(true); // Default is true
 
     useEffect(() => {
         const loadSettings = async () => {
@@ -18,10 +20,12 @@ export const SettingsProvider = ({ children }) => {
                 const savedSound = await AsyncStorage.getItem(SOUND_KEY);
                 const savedHaptics = await AsyncStorage.getItem(HAPTICS_KEY);
                 const savedReview = await AsyncStorage.getItem(REVIEW_KEY);
+                const savedFeedback = await AsyncStorage.getItem(FEEDBACK_KEY);
                 
                 if (savedSound !== null) setSoundEnabled(JSON.parse(savedSound));
                 if (savedHaptics !== null) setHapticsEnabled(JSON.parse(savedHaptics));
                 if (savedReview !== null) setReviewEnabled(JSON.parse(savedReview));
+                if (savedFeedback !== null) setFeedbackEnabled(JSON.parse(savedFeedback));
             } catch (error) {
                 // Ignore errors
             }
@@ -47,6 +51,12 @@ export const SettingsProvider = ({ children }) => {
         await AsyncStorage.setItem(REVIEW_KEY, JSON.stringify(newValue));
     };
 
+    const toggleFeedback = async () => {
+        const newValue = !feedbackEnabled;
+        setFeedbackEnabled(newValue);
+        await AsyncStorage.setItem(FEEDBACK_KEY, JSON.stringify(newValue));
+    };
+
     return (
         <SettingsContext.Provider value={{ 
             soundEnabled, 
@@ -54,7 +64,9 @@ export const SettingsProvider = ({ children }) => {
             hapticsEnabled, 
             toggleHaptics,
             reviewEnabled,
-            toggleReview
+            toggleReview,
+            feedbackEnabled,
+            toggleFeedback
         }}>
             {children}
         </SettingsContext.Provider>
