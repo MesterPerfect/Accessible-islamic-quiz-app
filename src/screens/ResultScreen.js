@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import CircularProgress from 'react-native-circular-progress-indicator';
 import { useTheme } from '../theme/ThemeContext';
 import { saveProgress } from '../utils/storage';
 
@@ -27,21 +26,20 @@ export default function ResultScreen({ route, navigation }) {
                     {passed ? "Excellent!" : "Try Again"}
                 </Text>
                 
-                <View style={styles.progressContainer} accessible={true} accessibilityLabel={`Your score is ${percentage.toFixed(0)} percent`}>
-                    <CircularProgress
-                        value={percentage}
-                        radius={80}
-                        duration={1500}
-                        progressValueColor={currentTheme.text}
-                        maxValue={100}
-                        title={'%'}
-                        titleColor={currentTheme.textSecondary}
-                        titleStyle={{ fontWeight: 'bold' }}
-                        activeStrokeColor={passed ? currentTheme.correct : currentTheme.wrong}
-                        inActiveStrokeColor={currentTheme.background}
-                        inActiveStrokeOpacity={0.5}
-                        inActiveStrokeWidth={15}
-                        activeStrokeWidth={15}
+                <Text style={[styles.percentageText, { color: passed ? currentTheme.correct : currentTheme.wrong }]}>
+                    {percentage.toFixed(0)}%
+                </Text>
+
+                {/* Custom Simple Progress Bar */}
+                <View style={[styles.progressBarBackground, { backgroundColor: currentTheme.background }]}>
+                    <View 
+                        style={[
+                            styles.progressBarFill, 
+                            { 
+                                width: `${percentage}%`, 
+                                backgroundColor: passed ? currentTheme.correct : currentTheme.wrong 
+                            }
+                        ]} 
                     />
                 </View>
                 
@@ -68,7 +66,6 @@ export default function ResultScreen({ route, navigation }) {
                 })}
                 accessible={true}
                 accessibilityRole="button"
-                accessibilityLabel="Back to Levels"
             >
                 <Text style={styles.buttonText}>Back to Levels</Text>
             </TouchableOpacity>
@@ -98,10 +95,21 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 20,
     },
-    progressContainer: {
-        marginVertical: 25,
-        alignItems: 'center',
-        justifyContent: 'center',
+    percentageText: {
+        fontSize: 48,
+        fontWeight: 'bold',
+        marginBottom: 15,
+    },
+    progressBarBackground: {
+        height: 15,
+        width: '100%',
+        borderRadius: 10,
+        overflow: 'hidden',
+        marginBottom: 25,
+    },
+    progressBarFill: {
+        height: '100%',
+        borderRadius: 10,
     },
     detailsText: {
         fontSize: 20,

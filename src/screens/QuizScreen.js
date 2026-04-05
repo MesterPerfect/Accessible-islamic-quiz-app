@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, AccessibilityInfo } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { themes } from '../theme/colors';
 import { useQuizEngine } from '../hooks/useQuizEngine';
@@ -7,11 +7,8 @@ import { useTheme } from '../theme/ThemeContext';
 
 export default function QuizScreen({ route, navigation }) {
     const { questions, levelKey, topicSlug, categoryId } = route.params;
-    
-    // Set default theme to dark
     const { currentTheme } = useTheme(); 
     
-    // Initialize the quiz engine with the questions and 30 seconds timer
     const { 
         currentQuestion, 
         currentIndex, 
@@ -22,49 +19,69 @@ export default function QuizScreen({ route, navigation }) {
     } = useQuizEngine(questions, 30);
 
     const onAnswerPress = async (isCorrect) => {
-        // Pass settings for haptics
-        await handleAnswer(isCorrect, { haptics: true });
+        await handleAnswer(isCorrect, { haptics: false });
     };
 
-    // Render result view when finished
-useEffect(() => {
-    if (isFinished) {
-        const result = calculateResult();
-        // Replace current screen with Result screen to prevent going back to finished quiz
-        navigation.replace('Result', {
-            score: result.score,
-            totalQuestions: questions.length,
-            percentage: result.percentage,
-            passed: result.passed,
-            categoryId,
-            topicSlug,
-            currentLevelKey: levelKey
-        });
-    }
-}, [isFinished]);
+    useEffect(() => {
+        if (isFinished) {
+            const result = calculateResult();
+            navigation.replace('Result', {
+                score: result.score,
+                totalQuestions: questions.length,
+                percentage: result.percentage,
+                passed: result.passed,
+                categoryId,
+                topicSlug,
+                currentLevelKey: levelKey
+            });
+        }
+    }, [isFinished]);
 
-// Prevent rendering question if finished (to avoid errors during transition)
-if (!currentQuestion || isFinished) {
-    return null; 
-}
+    // Accessibility: Announce question, progress, and remaining questions on change
+    useEffect(() => {
+        if (currentQuestion && !isFinished) {
+            const remainingQuestions = questions.length - (currentIndex + 1);
+            const announcementMessage = `Question ${currentIndex + 1} of ${questions.length}. ${remainingQuestions} questions remaining. The question is: ${currentQuestion.q}`;
+            
+            // Short delay to ensure transition is complete before TalkBack speaks
+            setTimeout(() => {
+                AccessibilityInfo.announceForAccessibility(announcementMessage);
+            }, 500);
+        }
+    }, [currentIndex, currentQuestion, isFinished]);
 
-    if (!currentQuestion) {
+    // Accessibility: Announce time remaining every 5 seconds
+    useEffect(() => {
+        if (timeLeft % 5 === 0 && timeLeft < 30 && timeLeft > 0 && !isFinished) {
+            AccessibilityInfo.announceForAccessibility(`${timeLeft} seconds remaining`);
+        }
+    }, [timeLeft, isFinished]);
+
+    if (!currentQuestion || isFinished) {
         return null; 
     }
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.background }]}>
             <View style={styles.header}>
-                <Text style={[styles.timer, { color: currentTheme.text }]}>
+                <Text 
+                    style={[styles.timer, { color: currentTheme.text }]}
+                    accessible={true}
+                    accessibilityLabel={`Time left: ${timeLeft} seconds`}
+                >
                     Time: {timeLeft}s
                 </Text>
-                <Text style={[styles.progress, { color: currentTheme.text }]}>
+                <Text 
+                    style={[styles.progress, { color: currentTheme.text }]}
+                    accessible={true}
+                    accessibilityLabel={`Question ${currentIndex + 1} out of ${questions.length}`}
+                >
                     {currentIndex + 1} / {questions.length}
                 </Text>
             </View>
 
-            <View style={styles.questionContainer}>
-                <Text style={[styles.questionText, { color: currentTheme.text }]} accessible={true}>
+            <View style={styles.questionContainer} accessible={true}>
+                <Text style={[styles.questionText, { color: currentTheme.text }]}>
                     {currentQuestion.q}
                 </Text>
             </View>
@@ -78,6 +95,7 @@ if (!currentQuestion || isFinished) {
                         accessible={true}
                         accessibilityRole="button"
                         accessibilityLabel={ans.answer}
+                        accessibilityHint="Double tap to select this answer"
                     >
                         <Text style={[styles.answerText, { color: currentTheme.primary }]}>
                             {ans.answer}
@@ -92,12 +110,6 @@ if (!currentQuestion || isFinished) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-    },
-    centeredContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         padding: 16,
     },
     header: {
@@ -144,21 +156,5 @@ const styles = StyleSheet.create({
         fontSize: 18,
         textAlign: 'center',
         fontWeight: '500',
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-    },
-    button: {
-        marginTop: 30,
-        padding: 15,
-        borderRadius: 8,
-        width: '100%',
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: '#FFFFFF',
-        fontSize: 18,
-        fontWeight: 'bold',
     }
 });
