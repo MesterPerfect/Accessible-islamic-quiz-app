@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { SettingsProvider } from './src/context/SettingsContext';
 import { ThemeProvider } from './src/theme/ThemeContext';
 
 import HomeScreen from './src/screens/HomeScreen';
@@ -18,6 +19,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
     return (
         <ThemeProvider>
+            <SettingsProvider>
             <SafeAreaProvider>
                 <NavigationContainer>
                     <Stack.Navigator 
@@ -56,6 +58,7 @@ export default function App() {
                     </Stack.Navigator>
                 </NavigationContainer>
             </SafeAreaProvider>
+           </SettingsProvider>
         </ThemeProvider>
     );
 }
