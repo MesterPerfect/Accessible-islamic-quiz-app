@@ -5,16 +5,14 @@ import { useTheme } from '../theme/ThemeContext';
 import { saveProgress } from '../utils/storage';
 
 export default function ResultScreen({ route, navigation }) {
-    const { score, totalQuestions, percentage, passed, categoryId, topicSlug, currentLevelKey } = route.params;
+    // Extract wrongQuestions from params
+    const { score, totalQuestions, percentage, passed, categoryId, topicSlug, currentLevelKey, wrongQuestions } = route.params;
     const { currentTheme } = useTheme();
 
     useEffect(() => {
         if (passed) {
-            // Calculate next level key (e.g., level1 -> level2)
             const currentNum = parseInt(currentLevelKey.replace('level', ''));
             const nextLevelKey = `level${currentNum + 1}`;
-            
-            // Save progress to unlock next level
             saveProgress(categoryId, topicSlug, nextLevelKey);
         }
     }, [passed]);
@@ -23,14 +21,13 @@ export default function ResultScreen({ route, navigation }) {
         <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.background }]}>
             <View style={[styles.card, { backgroundColor: currentTheme.surface }]} accessible={true}>
                 <Text style={[styles.title, { color: currentTheme.text }]}>
-                    {passed ? "Excellent!" : "Try Again"}
+                    {passed ? "ممتاز!" : "حاول مرة أخرى"}
                 </Text>
                 
                 <Text style={[styles.percentageText, { color: passed ? currentTheme.correct : currentTheme.wrong }]}>
                     {percentage.toFixed(0)}%
                 </Text>
 
-                {/* Custom Simple Progress Bar */}
                 <View style={[styles.progressBarBackground, { backgroundColor: currentTheme.background }]}>
                     <View 
                         style={[
@@ -44,22 +41,28 @@ export default function ResultScreen({ route, navigation }) {
                 </View>
                 
                 <Text style={[styles.detailsText, { color: currentTheme.text }]}>
-                    Correct Answers: {score} / {totalQuestions}
+                    الإجابات الصحيحة: {score} / {totalQuestions}
                 </Text>
 
-                {passed ? (
-                    <Text style={[styles.messageText, { color: currentTheme.textSecondary }]}>
-                        You have successfully unlocked the next level.
-                    </Text>
-                ) : (
-                    <Text style={[styles.messageText, { color: currentTheme.textSecondary }]}>
-                        You need 80% or higher to unlock the next level.
-                    </Text>
-                )}
+                <Text style={[styles.messageText, { color: currentTheme.textSecondary }]}>
+                    {passed ? "لقد نجحت في فتح المستوى التالي بنجاح." : "تحتاج إلى 80% أو أعلى لفتح المستوى التالي."}
+                </Text>
             </View>
 
             <View style={styles.buttonContainer}>
-                {/* Back to Levels Button */}
+                {/* Show Review Button only if there are mistakes */}
+                {!passed && wrongQuestions && wrongQuestions.length > 0 && (
+                    <TouchableOpacity
+                        style={[styles.reviewButton, { backgroundColor: currentTheme.secondary }]}
+                        onPress={() => navigation.navigate('Review', { wrongQuestions })}
+                        accessible={true}
+                        accessibilityRole="button"
+                        accessibilityLabel="مراجعة الإجابات الخاطئة"
+                    >
+                        <Text style={[styles.reviewButtonText, { color: '#000000' }]}>مراجعة الأخطاء</Text>
+                    </TouchableOpacity>
+                )}
+
                 <TouchableOpacity
                     style={[styles.button, { backgroundColor: currentTheme.primary }]}
                     onPress={() => navigation.navigate('Levels', { 
@@ -68,18 +71,15 @@ export default function ResultScreen({ route, navigation }) {
                     })}
                     accessible={true}
                     accessibilityRole="button"
-                    accessibilityLabel="Back to levels list"
                 >
                     <Text style={styles.buttonText}>العودة للمستويات</Text>
                 </TouchableOpacity>
 
-                {/* Back to Home Button */}
                 <TouchableOpacity
                     style={[styles.secondaryButton, { borderColor: currentTheme.primary, borderWidth: 2 }]}
                     onPress={() => navigation.popToTop()} 
                     accessible={true}
                     accessibilityRole="button"
-                    accessibilityLabel="Back to main categories"
                 >
                     <Text style={[styles.secondaryButtonText, { color: currentTheme.primary }]}>الرئيسية</Text>
                 </TouchableOpacity>
@@ -89,76 +89,19 @@ export default function ResultScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        justifyContent: 'center',
-    },
-    card: {
-        padding: 30,
-        borderRadius: 20,
-        alignItems: 'center',
-        elevation: 5,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-        marginBottom: 30,
-    },
-    title: {
-        fontSize: 32,
-        marginBottom: 20,
-        fontFamily: 'Cairo_Bold',
-    },
-    percentageText: {
-        fontSize: 48,
-        marginBottom: 15,
-        fontFamily: 'Cairo_Bold',
-    },
-    progressBarBackground: {
-        height: 15,
-        width: '100%',
-        borderRadius: 10,
-        overflow: 'hidden',
-        marginBottom: 25,
-    },
-    progressBarFill: {
-        height: '100%',
-        borderRadius: 10,
-    },
-    detailsText: {
-        fontSize: 20,
-        marginBottom: 10,
-        fontFamily: 'Cairo_Bold',
-    },
-    messageText: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginTop: 10,
-        lineHeight: 24,
-        fontFamily: 'Cairo_Regular',
-    },
-    buttonContainer: {
-        width: '100%',
-        gap: 12, 
-    },
-    button: {
-        padding: 16,
-        borderRadius: 12,
-        alignItems: 'center',
-    },
-    secondaryButton: {
-        padding: 16,
-        borderRadius: 12,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: '#FFFFFF',
-        fontSize: 18,
-        fontFamily: 'Cairo_Bold',
-    },
-    secondaryButtonText: {
-        fontSize: 18,
-        fontFamily: 'Cairo_Bold',
-    }
+    container: { flex: 1, padding: 20, justifyContent: 'center' },
+    card: { padding: 30, borderRadius: 20, alignItems: 'center', elevation: 5, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 6, marginBottom: 30 },
+    title: { fontSize: 32, marginBottom: 20, fontFamily: 'Cairo_Bold' },
+    percentageText: { fontSize: 48, marginBottom: 15, fontFamily: 'Cairo_Bold' },
+    progressBarBackground: { height: 15, width: '100%', borderRadius: 10, overflow: 'hidden', marginBottom: 25 },
+    progressBarFill: { height: '100%', borderRadius: 10 },
+    detailsText: { fontSize: 20, marginBottom: 10, fontFamily: 'Cairo_Bold' },
+    messageText: { fontSize: 16, textAlign: 'center', marginTop: 10, lineHeight: 24, fontFamily: 'Cairo_Regular' },
+    buttonContainer: { width: '100%', gap: 12 },
+    button: { padding: 16, borderRadius: 12, alignItems: 'center' },
+    secondaryButton: { padding: 16, borderRadius: 12, alignItems: 'center' },
+    reviewButton: { padding: 16, borderRadius: 12, alignItems: 'center', elevation: 2 },
+    buttonText: { color: '#FFFFFF', fontSize: 18, fontFamily: 'Cairo_Bold' },
+    secondaryButtonText: { fontSize: 18, fontFamily: 'Cairo_Bold' },
+    reviewButtonText: { fontSize: 18, fontFamily: 'Cairo_Bold' }
 });

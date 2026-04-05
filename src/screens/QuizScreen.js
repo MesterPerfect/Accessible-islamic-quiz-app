@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+	import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, AccessibilityInfo } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { themes } from '../theme/colors';
@@ -32,7 +32,8 @@ export default function QuizScreen({ route, navigation }) {
                 passed: result.passed,
                 categoryId,
                 topicSlug,
-                currentLevelKey: levelKey
+                currentLevelKey: levelKey,
+                wrongQuestions: result.wrongQuestions // Add this line
             });
         }
     }, [isFinished]);

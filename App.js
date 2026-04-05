@@ -18,6 +18,7 @@ import ResultScreen from './src/screens/ResultScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import AboutScreen from './src/screens/AboutScreen';
 import TutorialScreen from './src/screens/TutorialScreen';
+import ReviewScreen from './src/screens/ReviewScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -97,6 +98,7 @@ export default function App() {
                             <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'الإعدادات' }} />
                             <Stack.Screen name="About" component={AboutScreen} options={{ title: 'حول التطبيق' }} />
                             <Stack.Screen name="Tutorial" component={TutorialScreen} options={{ headerShown: false }} />
+                            <Stack.Screen name="Review" component={ReviewScreen} options={{ headerShown: false }} />
                         </Stack.Navigator>
                     </NavigationContainer>
                 </SafeAreaProvider>
