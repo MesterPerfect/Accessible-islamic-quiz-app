@@ -1,53 +1,50 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Create the context
 const SettingsContext = createContext();
 
 const SOUND_KEY = '@app_sound_enabled';
 const HAPTICS_KEY = '@app_haptics_enabled';
+const REVIEW_KEY = '@app_review_enabled'; // New key for review setting
 
-// Create the provider component
 export const SettingsProvider = ({ children }) => {
-    // Default settings are true (enabled)
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [hapticsEnabled, setHapticsEnabled] = useState(true);
+    const [reviewEnabled, setReviewEnabled] = useState(true); // Default is true
 
-    // Load saved settings on app start
     useEffect(() => {
         const loadSettings = async () => {
             try {
                 const savedSound = await AsyncStorage.getItem(SOUND_KEY);
                 const savedHaptics = await AsyncStorage.getItem(HAPTICS_KEY);
+                const savedReview = await AsyncStorage.getItem(REVIEW_KEY);
                 
                 if (savedSound !== null) setSoundEnabled(JSON.parse(savedSound));
                 if (savedHaptics !== null) setHapticsEnabled(JSON.parse(savedHaptics));
+                if (savedReview !== null) setReviewEnabled(JSON.parse(savedReview));
             } catch (error) {
-                // Ignore error, defaults will be used
+                // Ignore errors
             }
         };
         loadSettings();
     }, []);
 
-    // Toggle functions
     const toggleSound = async () => {
         const newValue = !soundEnabled;
         setSoundEnabled(newValue);
-        try {
-            await AsyncStorage.setItem(SOUND_KEY, JSON.stringify(newValue));
-        } catch (error) {
-            // Ignore error
-        }
+        await AsyncStorage.setItem(SOUND_KEY, JSON.stringify(newValue));
     };
 
     const toggleHaptics = async () => {
         const newValue = !hapticsEnabled;
         setHapticsEnabled(newValue);
-        try {
-            await AsyncStorage.setItem(HAPTICS_KEY, JSON.stringify(newValue));
-        } catch (error) {
-            // Ignore error
-        }
+        await AsyncStorage.setItem(HAPTICS_KEY, JSON.stringify(newValue));
+    };
+
+    const toggleReview = async () => {
+        const newValue = !reviewEnabled;
+        setReviewEnabled(newValue);
+        await AsyncStorage.setItem(REVIEW_KEY, JSON.stringify(newValue));
     };
 
     return (
@@ -55,12 +52,13 @@ export const SettingsProvider = ({ children }) => {
             soundEnabled, 
             toggleSound, 
             hapticsEnabled, 
-            toggleHaptics 
+            toggleHaptics,
+            reviewEnabled,
+            toggleReview
         }}>
             {children}
         </SettingsContext.Provider>
     );
 };
 
-// Custom hook to use settings anywhere
 export const useSettings = () => useContext(SettingsContext);

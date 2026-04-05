@@ -3,11 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../theme/ThemeContext';
 import { saveProgress } from '../utils/storage';
+import { useSettings } from '../context/SettingsContext';
 
 export default function ResultScreen({ route, navigation }) {
-    // Extract wrongQuestions from params
     const { score, totalQuestions, percentage, passed, categoryId, topicSlug, currentLevelKey, wrongQuestions } = route.params;
     const { currentTheme } = useTheme();
+    const { reviewEnabled } = useSettings();
 
     useEffect(() => {
         if (passed) {
@@ -50,8 +51,8 @@ export default function ResultScreen({ route, navigation }) {
             </View>
 
             <View style={styles.buttonContainer}>
-                {/* Show Review Button only if there are mistakes */}
-                {!passed && wrongQuestions && wrongQuestions.length > 0 && (
+                {/* Honor the reviewEnabled setting from context */}
+                {!passed && reviewEnabled && wrongQuestions && wrongQuestions.length > 0 && (
                     <TouchableOpacity
                         style={[styles.reviewButton, { backgroundColor: currentTheme.secondary }]}
                         onPress={() => navigation.navigate('Review', { wrongQuestions })}

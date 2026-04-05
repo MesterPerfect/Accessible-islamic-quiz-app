@@ -8,7 +8,7 @@ import { useSettings } from '../context/SettingsContext';
 // Added navigation prop
 export default function SettingsScreen({ navigation }) {
     const { currentTheme, themeMode, toggleTheme } = useTheme();
-    const { soundEnabled, toggleSound, hapticsEnabled, toggleHaptics } = useSettings();
+    const { soundEnabled, toggleSound, hapticsEnabled, toggleHaptics, reviewEnabled, toggleReview } = useSettings();
 
     const renderThemeOption = (mode, label) => {
         const isSelected = themeMode === mode;
@@ -62,6 +62,21 @@ export default function SettingsScreen({ navigation }) {
                         value={soundEnabled}
                         accessible={true}
                         accessibilityRole="switch"
+                    />
+                </View>
+
+                // Add reviewEnabled and toggleReview to destructuring:
+                <View style={[styles.settingRow, { backgroundColor: currentTheme.surface }]}>
+                    <Text style={[styles.settingLabel, { color: currentTheme.text }]}>إتاحة مراجعة الأخطاء</Text>
+                    <Switch
+                        trackColor={{ false: '#767577', true: currentTheme.primary }}
+                        thumbColor={'#f4f3f4'}
+                        onValueChange={toggleReview}
+                        value={reviewEnabled}
+                        accessible={true}
+                        accessibilityRole="switch"
+                        accessibilityState={{ checked: reviewEnabled }}
+                        accessibilityLabel="تفعيل أو تعطيل إمكانية مراجعة الأخطاء بعد انتهاء المستوى"
                     />
                 </View>
 
