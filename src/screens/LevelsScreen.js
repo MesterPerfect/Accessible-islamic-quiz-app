@@ -36,7 +36,7 @@ export default function LevelsScreen({ route, navigation }) {
             case 'level1':
                 return { name: 'المستوى الأول', subtitle: 'سهل', stars: 1, color: currentTheme.primary };
             case 'level2':
-                return { name: 'المستوى الثاني', subtitle: 'متوسط', stars: 2, color: '#f59e0b' }; // Orange/Gold
+                return { name: 'المستوى الثاني', subtitle: 'متوسط', stars: 2, color: '#f59e0b' }; 
             case 'level3':
                 return { name: 'المستوى الثالث', subtitle: 'صعب', stars: 3, color: currentTheme.wrong };
             default:
@@ -49,10 +49,14 @@ export default function LevelsScreen({ route, navigation }) {
         const isUnlocked = unlockedLevels.includes(levelKey);
         const isCompleted = completedLevels.includes(levelKey);
 
-        // Accessibility Label construction
         const accessibilityLabel = `${config.name}. الصعوبة: ${config.subtitle}. ${config.stars} نجوم. ${
             isUnlocked ? (isCompleted ? 'مكتمل بنجاح' : 'مفتوح للعب') : 'مغلق. أكمل المستوى السابق بـ 80% لفتحه'
         }`;
+
+        // SAFETY FIX: Check if levelsData exists, otherwise use empty array
+        const levelQuestions = topic.levelsData && topic.levelsData[levelKey] 
+            ? topic.levelsData[levelKey] 
+            : [];
 
         return (
             <TouchableOpacity
@@ -63,12 +67,12 @@ export default function LevelsScreen({ route, navigation }) {
                     !isUnlocked && styles.lockedCard
                 ]}
                 onPress={() => isUnlocked && navigation.navigate('Quiz', { 
-                    questions: topic.levels[levelKey], 
+                    questions: levelQuestions, // Pass the safely extracted questions
                     levelKey, 
                     topicSlug: topic.slug,
                     categoryId 
                 })}
-                disabled={!isUnlocked}
+                disabled={!isUnlocked || levelQuestions.length === 0} // Prevent entering if no questions exist
                 accessible={true}
                 accessibilityRole="button"
                 accessibilityLabel={accessibilityLabel}
@@ -83,7 +87,6 @@ export default function LevelsScreen({ route, navigation }) {
                         </Text>
                     </View>
                     
-                    {/* Status Icon */}
                     <View style={styles.statusIcon}>
                         {isCompleted ? (
                             <Ionicons name="checkmark-circle" size={32} color={currentTheme.correct} />
@@ -95,7 +98,6 @@ export default function LevelsScreen({ route, navigation }) {
                     </View>
                 </View>
 
-                {/* Stars Indicator */}
                 <View style={styles.starsContainer} accessible={false}>
                     {[...Array(3)].map((_, i) => (
                         <FontAwesome 
@@ -107,6 +109,13 @@ export default function LevelsScreen({ route, navigation }) {
                         />
                     ))}
                 </View>
+
+                {/* Show a warning if unlocked but data is missing in JSON */}
+                {isUnlocked && levelQuestions.length === 0 && (
+                    <Text style={{ fontSize: 12, fontFamily: 'Cairo_Bold', color: currentTheme.wrong, textAlign: 'right', marginTop: 10 }}>
+                        عذراً، الأسئلة غير متوفرة لهذا المستوى.
+                    </Text>
+                )}
 
                 {!isUnlocked && (
                     <Text style={styles.unlockHint}>أكمل المستوى السابق بـ 80% لفتحه</Text>
