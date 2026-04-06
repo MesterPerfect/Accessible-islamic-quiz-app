@@ -17,14 +17,26 @@ export default function LevelsScreen({ route, navigation }) {
             const loadProgress = async () => {
                 try {
                     const progress = await AsyncStorage.getItem(`@progress_${categoryId}_${topic.slug}`);
-                    if (progress === 'level2') setUnlockedLevels(['level1', 'level2']);
-                    else if (progress === 'level3') setUnlockedLevels(['level1', 'level2', 'level3']);
-                    else if (progress === 'completed') {
+                    
+                    // Explicitly handle all states to prevent empty arrays on navigation back
+                    if (progress === 'level2') {
+                        setUnlockedLevels(['level1', 'level2']);
+                        setCompletedLevels(['level1']);
+                    } else if (progress === 'level3') {
+                        setUnlockedLevels(['level1', 'level2', 'level3']);
+                        setCompletedLevels(['level1', 'level2']);
+                    } else if (progress === 'completed') {
                         setUnlockedLevels(['level1', 'level2', 'level3']);
                         setCompletedLevels(['level1', 'level2', 'level3']);
+                    } else {
+                        // CRITICAL FIX: Reset to default if no progress is found
+                        setUnlockedLevels(['level1']);
+                        setCompletedLevels([]);
                     }
                 } catch (e) {
-                    // Default values remain
+                    // Fallback to default in case of error
+                    setUnlockedLevels(['level1']);
+                    setCompletedLevels([]);
                 }
             };
             loadProgress();

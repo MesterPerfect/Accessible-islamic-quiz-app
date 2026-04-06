@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Image, Share } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather, FontAwesome, FontAwesome6 } from '@expo/vector-icons';
 import { useTheme } from '../theme/ThemeContext';
 
 export default function AboutScreen() {
     const { currentTheme } = useTheme();
-    const githubLink = 'https://github.com/MesterPerfect/Accessible-islamic-quiz-app';
+    const githubLink = 'https://github.com/MesterPerfect/islamic-quiz-app';
 
     const openLink = (url) => {
         Linking.openURL(url).catch(err => console.error("Couldn't load page", err));
@@ -15,7 +15,7 @@ export default function AboutScreen() {
     const shareProject = async () => {
         try {
             await Share.share({
-                message: `تطبيق "أسئلة إسلامية" مجاني ومفتوح المصدر! 🌙\nاختبر معلوماتك الشرعية الآن.\nيمكنك دعم المشروع وتصفح الكود عبر github من هنا:\n${githubLink}`,
+                message: `تطبيق "أسئلة إسلامية" مجاني ومفتوح المصدر! 🌙\nاختبر معلوماتك الشرعية الآن.\nيمكنك دعم المشروع وتصفح الكود عبر جيت هاب من هنا:\n${githubLink}`,
             });
         } catch (error) {
             console.log(error.message);
@@ -29,7 +29,7 @@ export default function AboutScreen() {
                 {/* App Info Section */}
                 <View style={styles.heroSection} accessible={true}>
                     <Text style={[styles.appName, { color: currentTheme.primary }]}>أسئلة إسلامية</Text>
-                    <Text style={[styles.appVersion, { color: currentTheme.textSecondary }]}>الإصدار 1.0.0</Text>
+                    <Text style={[styles.appVersion, { color: currentTheme.textSecondary }]}>الإصدار 1.0.1</Text>
                     <Text style={[styles.appDescription, { color: currentTheme.text }]}>
                         نافذة تستطيع من خلالها تقويم مستواك في العلوم الشرعية، وتطوير حصيلتك العلمية في مجالات متنوعة بأسلوب تفاعلي ممتع ومتاح للجميع.
                     </Text>
@@ -67,14 +67,14 @@ export default function AboutScreen() {
                             onPress={() => openLink('https://x.com/ahmedbakr593')}
                             accessible={true}
                             accessibilityRole="link"
-                            accessibilityLabel="تواصل معي عبر منصة إكس أو تويتر"
+                            accessibilityLabel="تواصل معي عبر منصة إكس"
                         >
-                            <FontAwesome name="twitter" size={36} color="#1DA1F2" />
+                            <FontAwesome6 name="x-twitter" size={36} color={currentTheme.text} />
                         </TouchableOpacity>
 
                         <TouchableOpacity 
                             style={styles.socialIcon} 
-                            onPress={() => openLink('https://t.me/MesterPerfect')}
+                            onPress={() => openLink('https://t.me/ahmedbakr593')}
                             accessible={true}
                             accessibilityRole="link"
                             accessibilityLabel="تواصل معي عبر تيليجرام"
@@ -107,7 +107,7 @@ export default function AboutScreen() {
                         <Text style={[styles.supportTitle, { color: currentTheme.text }]}>ادعم المشروع</Text>
                     </View>
                     <Text style={[styles.supportSubtitle, { color: currentTheme.textSecondary }]}>
-                        هذا التطبيق مجاني ومفتوح المصدر. يمكنك دعمنا بإعطاء المشروع نجمة (Star) على github, أو مشاركته مع من تحب ليتحقق النفع للجميع.
+                        هذا التطبيق مجاني ومفتوح المصدر. يمكنك دعمنا بإعطاء المشروع نجمة (Star) على جيت هاب، أو مشاركته مع من تحب ليتحقق النفع للجميع.
                     </Text>
 
                     <View style={styles.githubActions}>
@@ -116,7 +116,7 @@ export default function AboutScreen() {
                             onPress={() => openLink(githubLink)}
                             accessible={true}
                             accessibilityRole="button"
-                            accessibilityLabel="تقييم المشروع وإعطائه نجمة على موقع github"
+                            accessibilityLabel="تقييم المشروع وإعطائه نجمة على موقع جيت هاب"
                         >
                             <FontAwesome name="star" size={20} color="#FFD700" />
                             <Text style={styles.actionBtnText}>أضف نجمة للمشروع</Text>
@@ -137,7 +137,7 @@ export default function AboutScreen() {
 
                 {/* Footer */}
                 <View style={styles.footer} accessible={true}>
-                    <Text style={[styles.footerText, { color: currentTheme.textSecondary }]}>© 2026 — جميع الحقوق محفوظة</Text>
+                    <Text style={[styles.footerText, { color: currentTheme.textSecondary }]}>© 2024 — جميع الحقوق محفوظة</Text>
                 </View>
 
             </ScrollView>

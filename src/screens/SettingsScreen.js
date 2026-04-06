@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../theme/ThemeContext';
 import { useSettings } from '../context/SettingsContext';
 
@@ -9,12 +9,12 @@ export default function SettingsScreen({ navigation }) {
     const { currentTheme, themeMode, toggleTheme } = useTheme();
     const { soundEnabled, toggleSound, hapticsEnabled, toggleHaptics, reviewEnabled, toggleReview, feedbackEnabled, toggleFeedback } = useSettings();
 
-    const renderThemeOption = (mode, label) => {
+    const renderThemeIcon = (mode, IconComponent, iconName, label) => {
         const isSelected = themeMode === mode;
         return (
             <TouchableOpacity
                 style={[
-                    styles.optionButton,
+                    styles.themeIconButton,
                     { backgroundColor: currentTheme.surface },
                     isSelected && { borderColor: currentTheme.primary, borderWidth: 2 }
                 ]}
@@ -24,12 +24,11 @@ export default function SettingsScreen({ navigation }) {
                 accessibilityState={{ selected: isSelected }}
                 accessibilityLabel={label}
             >
-                <Text style={[
-                    styles.optionText, 
-                    { color: isSelected ? currentTheme.primary : currentTheme.text }
-                ]}>
-                    {label}
-                </Text>
+                <IconComponent 
+                    name={iconName} 
+                    size={28} 
+                    color={isSelected ? currentTheme.primary : currentTheme.textSecondary} 
+                />
             </TouchableOpacity>
         );
     };
@@ -37,17 +36,19 @@ export default function SettingsScreen({ navigation }) {
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.background }]}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                {/* Appearance Section */}
+                
                 <Text style={[styles.sectionTitle, { color: currentTheme.text }]} accessible={true} accessibilityRole="header">
                     المظهر
                 </Text>
-                {renderThemeOption('light', 'الوضع الفاتح')}
-                {renderThemeOption('dark', 'الوضع المظلم')}
-                {renderThemeOption('highContrast', 'وضع التباين العالي')}
+                
+                <View style={styles.themeRow}>
+                    {renderThemeIcon('light', Feather, 'sun', 'الوضع الفاتح')}
+                    {renderThemeIcon('dark', Feather, 'moon', 'الوضع المظلم')}
+                    {renderThemeIcon('highContrast', Ionicons, 'contrast', 'وضع التباين العالي')}
+                </View>
 
                 <View style={[styles.divider, { backgroundColor: currentTheme.surface }]} />
 
-                {/* Game Settings Section */}
                 <Text style={[styles.sectionTitle, { color: currentTheme.text }]} accessible={true} accessibilityRole="header">
                     إعدادات اللعب
                 </Text>
@@ -61,12 +62,11 @@ export default function SettingsScreen({ navigation }) {
                         value={soundEnabled}
                         accessible={true}
                         accessibilityRole="switch"
-                        accessibilityState={{ checked: soundEnabled }}
                         accessibilityLabel="تفعيل أو تعطيل المؤثرات الصوتية للتطبيق"
+                        accessibilityState={{ checked: soundEnabled }}
                     />
                 </View>
 
-                {/* Review Mistakes Option */}
                 <View style={[styles.settingRow, { backgroundColor: currentTheme.surface }]}>
                     <Text style={[styles.settingLabel, { color: currentTheme.text }]}>إتاحة مراجعة الأخطاء</Text>
                     <Switch
@@ -108,7 +108,6 @@ export default function SettingsScreen({ navigation }) {
 
                 <View style={[styles.divider, { backgroundColor: currentTheme.surface }]} />
 
-                {/* About Section */}
                 <Text style={[styles.sectionTitle, { color: currentTheme.text }]} accessible={true} accessibilityRole="header">
                     حول التطبيق
                 </Text>
@@ -137,20 +136,24 @@ const styles = StyleSheet.create({
         marginTop: 10,
         textAlign: 'right',
     },
-    optionButton: {
-        padding: 16,
-        borderRadius: 12,
-        marginBottom: 12,
+    themeRow: {
+        flexDirection: 'row-reverse',
+        justifyContent: 'space-between',
         alignItems: 'center',
+        marginBottom: 12,
+        gap: 12,
+    },
+    themeIconButton: {
+        flex: 1,
+        paddingVertical: 16,
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
         elevation: 2,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-    },
-    optionText: {
-        fontSize: 18,
-        fontFamily: 'Cairo_Bold',
     },
     divider: {
         height: 2,

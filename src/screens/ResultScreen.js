@@ -142,9 +142,21 @@ export default function ResultScreen({ route, navigation }) {
                         </TouchableOpacity>
                     )}
 
+                    {/* Navigation back to Levels - FIXED */}
                     <TouchableOpacity
                         style={[styles.actionButton, { backgroundColor: currentTheme.primary }]}
-                        onPress={() => navigation.navigate('Levels', { topic: { slug: topicSlug, name: '' }, categoryId })}
+                        onPress={() => {
+                            const state = navigation.getState();
+                            const levelsIndex = state.routes.findIndex(r => r.name === 'Levels');
+                            if (levelsIndex !== -1) {
+                                const screensToPop = state.routes.length - 1 - levelsIndex;
+                                if (screensToPop > 0) {
+                                    navigation.pop(screensToPop);
+                                }
+                            } else {
+                                navigation.popToTop();
+                            }
+                        }}
                         accessible={true}
                         accessibilityRole="button"
                     >
