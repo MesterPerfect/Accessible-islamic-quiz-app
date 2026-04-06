@@ -43,7 +43,18 @@ npx expo start
 
 ## 📱 صور من التطبيق (Screenshots)
 
-*(يمكنك رفع صور للتطبيق هنا لاحقاً وإضافة الروابط الخاصة بها)*
+<p align="center">
+  <img src="https://raw.githubusercontent.com/MesterPerfect/Accessible-islamic-quiz-app/refs/heads/master/assets/screens/home.jpg" width="30%" alt="الشاشة الرئيسية للتطبيق">
+  <img src="https://raw.githubusercontent.com/MesterPerfect/Accessible-islamic-quiz-app/refs/heads/master/assets/screens/Levels.jpg" width="30%" alt="شاشة اختيار التصنيف">
+  <img src="https://raw.githubusercontent.com/MesterPerfect/Accessible-islamic-quiz-app/refs/heads/master/assets/screens/Levels2.jpg" width="30%" alt="شاشة اختيار المستوى">
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/MesterPerfect/Accessible-islamic-quiz-app/refs/heads/master/assets/screens/Quiz.jpg" width="30%" alt="شاشة عرض السؤال">
+  <img src="https://raw.githubusercontent.com/MesterPerfect/Accessible-islamic-quiz-app/refs/heads/master/assets/screens/settings.jpg" width="30%" alt="شاشة عرض الإعدادات">
+  <img src="https://raw.githubusercontent.com/MesterPerfect/Accessible-islamic-quiz-app/refs/heads/master/assets/screens/Statistics.jpg" width="30%" alt="شاشة عرض الإحصائيات">
+</p>
+
 
 ## 👨‍💻 المطور
 
