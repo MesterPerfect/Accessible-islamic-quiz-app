@@ -44,7 +44,7 @@ npx expo start
 ## 📱 صور من التطبيق (Screenshots)
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/MesterPerfect/Accessible-islamic-quiz-app/refs/heads/master/assets/screens/home.jpg" width="30%" alt="الشاشة الرئيسية للتطبيق">
+
   <img src="https://raw.githubusercontent.com/MesterPerfect/Accessible-islamic-quiz-app/refs/heads/master/assets/screens/Levels.jpg" width="30%" alt="شاشة اختيار التصنيف">
   <img src="https://raw.githubusercontent.com/MesterPerfect/Accessible-islamic-quiz-app/refs/heads/master/assets/screens/Levels2.jpg" width="30%" alt="شاشة اختيار المستوى">
 </p>
